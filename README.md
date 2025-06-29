@@ -1,4 +1,3 @@
-ChatGPT said:
 The Cricket App Backend is a Node.js and Express service that uses MongoDB (via Mongoose) for data persistence, supports JWT-based authentication (email/password, phone-OTP, and Firebase ID token exchange), and provides Swagger-documented REST endpoints for creating matches, managing team invites, and retrieving live scores. It also integrates Socket.IO for real-time coin-flip toss results and score updates, and comes with interactive API documentation at /api-docs.
 
 
