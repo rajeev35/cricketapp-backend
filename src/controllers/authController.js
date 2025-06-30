@@ -20,7 +20,7 @@ exports.register = async (req, res) => {
     const hashed = await bcrypt.hash(password, 12);
     const user = await User.create({ email, password: hashed, displayName });
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn:'7d' });
-    return res.status(201).json({ token });
+    return res.status(201).json({ token, displayName: user.displayName,});
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: 'Registration failed' });
@@ -41,7 +41,7 @@ exports.emailLogin = async (req, res) => {
       return res.status(400).json({ error: 'Invalid credentials' });
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token });
+    res.json({ token, displayName: user.displayName,});
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Authentication failed' });
@@ -91,7 +91,7 @@ exports.verifyOtp = async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token });
+    res.json({ token, displayName: user.displayName,});
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'OTP verification failed' });

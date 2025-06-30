@@ -25,3 +25,15 @@ exports.createMatch = async (req, res) => {
     return res.status(500).json({ error: 'Failed to create match' });
   }
 };
+exports.listMatches = async (req, res) => {
+  try {
+    
+    const matches = await Match.find({
+      participants: req.user.userId
+    }).sort({ date: 1 });
+    res.json(matches);
+  } catch (err) {
+    console.error('List matches error:', err);
+    res.status(500).json({ error: 'Failed to load matches' });
+  }
+};

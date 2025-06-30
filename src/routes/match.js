@@ -2,7 +2,35 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
-const { createMatch } = require('../controllers/matchController');
+const {
+  createMatch,
+  listMatches
+} = require('../controllers/matchController');
+
+/**
+ * @openapi
+ * /matches:
+ *   get:
+ *     summary: List all matches for the authenticated user
+ *     tags:
+ *       - Matches
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Array of Match objects
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Match'
+ *       '401':
+ *         description: Unauthorized
+ *       '500':
+ *         description: Server error
+ */
+router.get('/', authMiddleware, listMatches);
 
 /**
  * @openapi
