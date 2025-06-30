@@ -20,6 +20,7 @@ const io = socketIo(server, {
     origin: '*', // in production, lock this down
   },
 });
+app.set('io', io);
 
 // --- Middleware ---
 app.use(cors());
