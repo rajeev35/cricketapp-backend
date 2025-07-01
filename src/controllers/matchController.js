@@ -37,3 +37,20 @@ exports.listMatches = async (req, res) => {
     res.status(500).json({ error: 'Failed to load matches' });
   }
 };
+
+
+exports.deleteMatch = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const match = await Match.findById(id);
+    if (!match) return res.status(404).json({ error: 'Match not found' });
+    if (match.owner.toString() !== req.user.userId) {
+      return res.status(403).json({ error: 'Not allowed to delete this match' });
+    }
+    await match.deleteOne();
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Delete match error:', err);
+    res.status(500).json({ error: 'Failed to delete match' });
+  }
+};

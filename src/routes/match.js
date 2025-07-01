@@ -1,10 +1,11 @@
 // src/routes/match.js
 const express = require('express');
-const router = express.Router();
-const authMiddleware = require('../middleware/authMiddleware');
+const router  = express.Router();
+const authMiddleware    = require('../middleware/authMiddleware');
 const {
   createMatch,
-  listMatches
+  listMatches,
+  deleteMatch,
 } = require('../controllers/matchController');
 
 /**
@@ -25,10 +26,6 @@ const {
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Match'
- *       '401':
- *         description: Unauthorized
- *       '500':
- *         description: Server error
  */
 router.get('/', authMiddleware, listMatches);
 
@@ -47,22 +44,7 @@ router.get('/', authMiddleware, listMatches);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - format
- *               - date
- *               - location
- *             properties:
- *               format:
- *                 type: string
- *                 example: T20
- *               date:
- *                 type: string
- *                 format: date-time
- *                 example: 2025-07-05T15:30:00Z
- *               location:
- *                 type: string
- *                 example: Mumbai Ground
+ *             $ref: '#/components/schemas/MatchInput'
  *     responses:
  *       '201':
  *         description: Match created
@@ -70,13 +52,45 @@ router.get('/', authMiddleware, listMatches);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Match'
- *       '400':
- *         description: Missing required fields
+ */
+router.post('/', authMiddleware, createMatch);
+
+/**
+ * @openapi
+ * /matches/{id}:
+ *   delete:
+ *     summary: Delete a match by ID
+ *     tags:
+ *       - Matches
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Mongo ID of the match to delete
+ *     responses:
+ *       '200':
+ *         description: Successfully deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
  *       '401':
  *         description: Unauthorized
+ *       '403':
+ *         description: Forbidden (not owner)
+ *       '404':
+ *         description: Match not found
  *       '500':
  *         description: Server error
  */
-router.post('/', authMiddleware, createMatch);
+router.delete('/:id', authMiddleware, deleteMatch);
 
 module.exports = router;
